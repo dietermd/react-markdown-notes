@@ -2,6 +2,8 @@ import "./styles.css";
 import React from "react";
 import Split from "react-split";
 import { nanoid } from "nanoid";
+import Sidebar from "./components/Sidebar";
+import Editor from "./components/Editor";
 
 export default function App() {
   const [notes, setNotes] = React.useState([]);
@@ -22,8 +24,8 @@ export default function App() {
     <main>
       {notes.length > 0 ? (
         <Split sizes={[30, 70]} direction="horizontal" className="split">
-          <h1>Component 1</h1>
-          <h1>Component 2</h1>
+          <Sidebar />
+          <Editor />
         </Split>
       ) : (
         <div className="no-notes">
