@@ -16,8 +16,19 @@ export default function App() {
       id: nanoid(),
       body: "# Type your markdown note's title here",
     };
-    setNotes((prevNotes) => [newNote, ...prevNotes]);
-    setCurrentNoteId(newNote.id);
+    setNotes((prevNotes) => [...prevNotes, newNote]);
+    console.log(notes.length);
+    if (notes.length < 1) {
+      setCurrentNoteId(newNote.id);
+    }
+  }
+
+  function uptdateNote(text) {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id == currentNoteId ? { ...note, body: text } : note
+      )
+    );
   }
 
   function getCurrentNote() {
@@ -34,7 +45,9 @@ export default function App() {
             createNewNote={createNewNote}
             currentNote={getCurrentNote()}
           />
-          {currentNoteId && notes.length > 0 && <Editor />}
+          {currentNoteId && notes.length > 0 && (
+            <Editor currentNote={getCurrentNote()} uptdateNote={uptdateNote} />
+          )}
         </Split>
       ) : (
         <div className="no-notes">
