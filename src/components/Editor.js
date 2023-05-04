@@ -17,7 +17,7 @@ export default function Editor(props) {
     <section className="pane editor">
       <ReactMde
         value={props.currentNote.body}
-        onChange={props.uptdateNote}
+        onChange={props.updateNote}
         selectedTab={selectedTab}
         onTabChange={setSelectedTab}
         generateMarkdownPreview={(markdown) =>

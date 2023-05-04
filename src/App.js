@@ -7,7 +7,7 @@ import Editor from "./components/Editor";
 
 export default function App() {
   const [notes, setNotes] = React.useState(
-    JSON.parse(localStorage.getItem("notes")) || []
+    () => JSON.parse(localStorage.getItem("notes")) || []
   );
   const [currentNoteId, setCurrentNoteId] = React.useState(
     (notes[0] && notes[0].id) || ""
@@ -22,19 +22,18 @@ export default function App() {
       id: nanoid(),
       body: "# Type your markdown note's title here",
     };
-    setNotes((prevNotes) => [...prevNotes, newNote]);
-    console.log(notes.length);
-    if (notes.length < 1) {
-      setCurrentNoteId(newNote.id);
-    }
+    setNotes((prevNotes) => [newNote, ...prevNotes]);
+    setCurrentNoteId(newNote.id);
   }
 
-  function uptdateNote(text) {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id == currentNoteId ? { ...note, body: text } : note
-      )
-    );
+  function updateNote(text) {
+    setNotes((prevNotes) => {
+      const index = prevNotes.findIndex((n) => n.id === currentNoteId);
+      const updNote = prevNotes.splice(index, 1)[0];
+      updNote.body = text;
+      prevNotes.unshift(updNote);
+      return [...prevNotes];
+    });
   }
 
   function getCurrentNote() {
@@ -52,7 +51,7 @@ export default function App() {
             currentNote={getCurrentNote()}
           />
           {currentNoteId && notes.length > 0 && (
-            <Editor currentNote={getCurrentNote()} uptdateNote={uptdateNote} />
+            <Editor currentNote={getCurrentNote()} updateNote={updateNote} />
           )}
         </Split>
       ) : (
