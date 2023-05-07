@@ -40,6 +40,17 @@ export default function App() {
     return notes.find((note) => note.id === currentNoteId) || notes[0];
   }
 
+  function deleteNote(event, noteId) {
+    event.stopPropagation();
+    setNotes((prevNotes) => prevNotes.filter((n) => n.id !== noteId));
+    if (currentNoteId === noteId) {
+      const nextIndex = notes.findIndex((n) => n.id !== noteId);
+      if (nextIndex !== -1) {
+        setCurrentNoteId(notes[nextIndex].id);
+      }
+    }
+  }
+
   return (
     <main>
       {notes.length > 0 ? (
@@ -49,6 +60,7 @@ export default function App() {
             setCurrentNoteId={setCurrentNoteId}
             createNewNote={createNewNote}
             currentNote={getCurrentNote()}
+            deleteNote={deleteNote}
           />
           {currentNoteId && notes.length > 0 && (
             <Editor currentNote={getCurrentNote()} updateNote={updateNote} />
