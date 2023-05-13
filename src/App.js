@@ -9,7 +9,10 @@ export default function App() {
   const [notes, setNotes] = React.useState(
     () => JSON.parse(localStorage.getItem("notes")) || []
   );
+
   const [currentNoteId, setCurrentNoteId] = React.useState(notes[0]?.id || "");
+
+  const [tempNoteText, setTempNoteText] = React.useState("");
 
   const currentNote =
     notes.find((note) => note.id === currentNoteId) || notes[0];
@@ -17,6 +20,22 @@ export default function App() {
   React.useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
   }, [notes]);
+
+  React.useEffect(() => {
+    if (currentNote) {
+      setTempNoteText(currentNote.body);
+    }
+  }, [currentNote]);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (tempNoteText !== currentNote.body) {
+        updateNote(tempNoteText);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [tempNoteText]);
 
   function createNewNote() {
     const newNote = {
@@ -60,7 +79,10 @@ export default function App() {
             deleteNote={deleteNote}
           />
           {currentNoteId && notes.length > 0 && (
-            <Editor currentNote={currentNote} updateNote={updateNote} />
+            <Editor
+              tempNoteText={tempNoteText}
+              setTempNoteText={setTempNoteText}
+            />
           )}
         </Split>
       ) : (
